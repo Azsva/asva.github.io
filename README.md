@@ -87,3 +87,38 @@
     </script>
 </body>
 </html>
+
+
+
+import requests
+import random
+
+def fetch_books(category):
+    # Make a request to the Goodreads API to fetch books in the specified category
+    url = f"https://www.goodreads.com/shelf/book/{category}.json?key=YOUR_API_KEY"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad response status codes
+        data = response.json()
+        return [book["title"] for book in data["books"]]
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch book data from Goodreads: {e}")
+        return []
+
+def select_random_book(books):
+    # Select a random book from the list of books
+    return random.choice(books)
+
+def main():
+    print("Welcome to the Random Book Selector!")
+    category = input("Choose a category (e.g., fiction, non-fiction): ")
+    books = fetch_books(category)
+    if books:
+        random_book = select_random_book(books)
+        print(f"Randomly selected book from the '{category}' category: {random_book}")
+    else:
+        print("No books found in the specified category.")
+
+if __name__ == "__main__":
+    main()
+
